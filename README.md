@@ -33,7 +33,7 @@ in my case i used
 you will need to set perms for dumpcap and all that
 
 
-FOR PERSONAL USE, THIS IS A TOY, NO SUPPORT GIVEN
+# FOR PERSONAL USE, THIS IS A TOY, NO SUPPORT GIVEN
 
 also feel free to fork or make pull requests or w/e. 
 its foss do what you want
