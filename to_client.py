@@ -45,7 +45,15 @@ class MyClient(discord.Client):
         print(f'logged on as {self.user}!')
     
     async def on_message(self, message):
+
+        # Ignore messages sent by webhooks
+        if message.webhook_id is not None:
+            return
+
         if message.channel.id == TARGET_CHANNEL_ID:
+            # Ignore messages sent by webhooks
+            if message.webhook_id is not None:
+                return
             usrname = message.author.display_name
 
             print(usrname)
