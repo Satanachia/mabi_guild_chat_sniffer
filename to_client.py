@@ -70,11 +70,22 @@ class MyClient(discord.Client):
 
 
             startsendmabi = "[" + usrname + "] : " + cleaned_message
+            
+            #remove " from strings to prevent error
+            startsendmabi = startsendmabi.replace('"','')
 
             chunks = split_message(startsendmabi, 80)
             print (chunks)
 
             for chunk in chunks:
+
+                chunk = chunk.replace('\0', '')  # This removes the null byte
+
+                # Check if the chunk is empty after removing null bytes
+                if not chunk:
+                    print("Empty chunk after removing null byte, skipping.")
+                    continue  # Skip this chunk if it is empty after removing null bytes
+
                 string = f'xdotool type "{chunk}"'
                 print (string)
                 os.system(string)
