@@ -8,6 +8,7 @@ networkinterface = "Ethernet"
 capture = pyshark.LiveCapture(interface=networkinterface, bpf_filter="src host 54.214.176.167")
 hook = "DISCORD_WEB_HOOK_HERE"
 botname = "BOT_NAME_HERE"
+inGameCharName = "CHAR_NAME_HERE"
 
 #inform user we captureing
 print ("listening on %s" % networkinterface)
@@ -33,20 +34,30 @@ for packet in capture.sniff_continuously():
 
                 name = byte_array[22:22+nameLeng].decode("utf-8")
                 name = name.lower()
-                name = name.capitalize()
+                if inGameCharName not in name:
 
 
-                #get message
-                messageLength = int.from_bytes(byte_array[22+nameLeng+1 :22+nameLeng+3], "big")
-                message = byte_array[22+nameLeng+3:22+nameLeng+3+messageLength].decode("utf-8")
+                    name = name.capitalize()
 
-                #print guild chat message to console
-                localtime = datetime.datetime.now().strftime("%d.%b | %H:%M:%S")
-                out = "(" + localtime + ") " + name + ": " + message
-                print(out)
 
-                #send it out to the webhook
-                webhook = DiscordWebhook(url=hook,username=botname,content=out)
-                response = webhook.execute()
+                    #get message
+                    messageLength = int.from_bytes(byte_array[22+nameLeng+1 :22+nameLeng+3], "big")
+                    message = byte_array[22+nameLeng+3:22+nameLeng+3+messageLength].decode("utf-8")
+
+                    #print guild chat message to console
+                    localtime = datetime.datetime.now().strftime("%d.%b | %H:%M:%S")
+                    log = "(" + localtime + ") " + name + ": " + message
+                    out = message
+                    print(log)
+
+                    #remove @everyone and @here tags
+                    #remove the added & nexon adds
+                    out = out.replace("@everyone","")
+                    out = out.replace("@here","")
+                    out = out.replace("&", "")
+
+                    #send it out to the webhook
+                    webhook = DiscordWebhook(url=hook,username=name,content=out)
+                    response = webhook.execute()
 
                 
