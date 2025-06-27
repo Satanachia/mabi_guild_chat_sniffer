@@ -1,39 +1,54 @@
-What is this
+# Mabinogi Chat Sniffer → Discord Bridge
 
+A personal tool for capturing guild chat messages from **Mabinogi** and forwarding them to a Discord channel via webhook — and vice versa.
 
-## to discord
-its a simple sniffer that uses tshark (pyshark) to read incoming packets from the mabinogi chat server
-it will find any packets that are used for guild messages and send them to discord via a simple web hook
+---
 
-## to_client
-will take a message from a choosen discord channel, find the display name for the user
-attempt to remove any unicode emotes
-attempt to give names to any discord based emote
-split the message into chunks with out breaking apart whole words
-then type those messages out using a linux command "xdotool"
+## What it Does
 
+### `to_discord.py`
+- Uses `pyshark` to **sniff packets** from the Mabinogi chat server
+- Detects in-game messages based on known packet structure
+- Extracts and decodes messages
+- Forwards cleaned messages to a **Discord Webhook**
 
-the message will be typed into any text box that is currently selected so make sure you select the mabinogi chat box using the chat log
+### `to_client.py`
+- Listens to a selected **Discord channel**
+- Cleans and formats messages:
+  - Removes Discord emotes and unicode emojis
+  - Trims invisible characters
+  - Breaks messages into 80-character chunks
+- **Types messages** into the currently selected window using `xdotool`
 
+> 💡 Tip: Select the Mabinogi chat input box after running `to_client.py`
 
-## extra
+---
 
-this will only work on linux. weird i know but my server runs linux and its easy for me
+## Requirements
 
-make sure you install on pip
+Works on **Linux only** (designed for my personal server setup)
+
+### Python dependencies
+Install with `pip install -r requirements.txt` or manually:
 - discord.py
 - discord_webhook
 - pyshark
 
-make sure you have wireshark installed and network traffic capture dumpcap or tshark
-in my case i used
+###  System dependencies
+Make sure you have installed:
 
-```$> sudo apt install wireshark```
+- Wireshark
+- xdotool
 
-you will need to set perms for dumpcap and all that
+Make sure you have permissions for dumpcap / tshark
 
 
-# FOR PERSONAL USE, THIS IS A TOY, NO SUPPORT GIVEN
+---
 
-also feel free to fork or make pull requests or w/e. 
-its foss do what you want
+### Important Notes
+-This is a personal project / toy tool
+-Use at your own risk
+-No support guaranteed
+
+### License
+MIT / FOSS — fork it, use it, break it. Have fun.
