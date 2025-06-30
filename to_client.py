@@ -1,13 +1,15 @@
 import os
+from dotenv import load_dotenv
 import time
 import discord
 import re
 import asyncio
 import subprocess
 
-TARGET_CHANNEL_ID = 111111111111111 #discord channel id here
-TOKEN = "TOKEN_HERE"
-DISCORD_GUILD_ID = 111111111111111111
+
+TOKEN = os.getenv("TOKEN")
+TARGET_CHANNEL_ID = int(os.getenv("TARGET_CHANNEL_ID"))
+DISCORD_GUILD_ID = int(os.getenv("DISCORD_GUILD_ID"))
 
 DISCORD_EMOTE_PATTERN = r'<a?:(\w+):\d+>'
 UNICODE_EMOJI_PATTERN = r'[\U0001F1E6-\U0001F1FF\U0001F300-\U0001F5FF\U0001F600-\U0001F64F\U0001F680-\U0001F6FF\u2600-\u26FF\u2700-\u27BF]'
@@ -196,6 +198,15 @@ async def stop_command(interaction: discord.Interaction, reminder_id: int):
 
     await client.handle_stop_command(reminder_id,interaction)
 
+
+if not TOKEN:
+    raise ValueError("Token not set in .env")
+
+if not TARGET_CHANNEL_ID:
+    raise ValueError("Discord target channel ID not set in .env")
+
+if not DISCORD_GUILD_ID:
+    raise ValueError("discord server ID not set in .env")
 
 
 intents = discord.Intents.default()

@@ -1,17 +1,37 @@
+import os
+from dotenv import load_dotenv
 import datetime
 import pyshark
 from discord_webhook import DiscordWebhook
 
+
+NETWORKINTERFACE = os.getenv("NETWORK_INTERFACE")
+CHATSERVERIP= os.getenv("MABI_CHAT_SERVER_IP")
+DISCORD_HOOK = os.getenv("DISCORD_WEB_HOOK")
+MABI_CHAR_NAME = os.getenv("MABI_CHAR_NAME")
+
+
+if not NETWORKINTERFACE:
+    raise ValueError("Network interface not set in .env")
+
+if not CHATSERVERIP:
+    raise ValueError("Chat server IP not set in .env")
+
+if not DISCORD_HOOK:
+    raise ValueError("Discord webhook address not set in .env")
+
+if not MABI_CHAR_NAME:
+    raise ValueError("Chat bot username (in mabinogi) not set in .env")
+
 #capture from
-#54.214.176.167 is chat server used for guild chat
-networkinterface = "Ethernet"
-capture = pyshark.LiveCapture(interface=networkinterface, bpf_filter="src host 54.214.176.167")
-hook = "DISCORD_WEB_HOOK_HERE"
-botname = "BOT_NAME_HERE"
-inGameCharName = "CHAR_NAME_HERE"
+#54.214.176.167 is chat server used for guild chat normally
+#however we are are using the ip given from the ENV
+filterstring = f'src host {CHATSERVERIP}'
+capture = pyshark.LiveCapture(interface=NETWORKINTERFACE, bpf_filter=filterstring)
+
 
 #inform user we captureing
-print ("listening on %s" % networkinterface)
+print ("listening on %s" % NETWORKINTERFACE)
 
 for packet in capture.sniff_continuously():
     #check if tcp packet
@@ -34,7 +54,7 @@ for packet in capture.sniff_continuously():
 
                 name = byte_array[22:22+nameLeng].decode("utf-8")
                 name = name.lower()
-                if inGameCharName not in name:
+                if MABI_CHAR_NAME not in name:
 
 
                     name = name.capitalize()
@@ -56,8 +76,8 @@ for packet in capture.sniff_continuously():
                     out = out.replace("@here","")
                     out = out.replace("&", "")
 
-                    #send it out to the webhook
-                    webhook = DiscordWebhook(url=hook,username=name,content=out)
-                    response = webhook.execute()
+                    #send it out to the Webhook
+                    Webhook = DiscordWebhook(url=DISCORD_HOOK,username=name,content=out)
+                    response = Webhook.execute()
 
                 
